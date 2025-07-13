@@ -1,23 +1,20 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-
+    "module": "commonjs",
     "baseUrl": "./src",
     "paths": {
       "@modules/*": ["modules/*"],
       "@middlewares/*": ["middlewares/*"],
-      "@utils/*": ["utils/*"]
+      "@utils/*": ["utils/*"],
+      "@services/*": ["services/*"],
+      "@config/*": ["config/*"]
     },
-
-    "rootDir": "src",
-    "outDir": "dist",
-
-    "strict": true,
+    "outDir": "./dist",
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true
-  },
-  "include": ["src"]
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "strict": true
+  }
 }
