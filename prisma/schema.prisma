@@ -1,0 +1,96 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Prisma will generates plural models with the map param
+
+model User {
+  id        String   @id @default(dbgenerated("gen_random_uuid()"))
+  email     String   @unique
+  username  String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  profile      Profile?
+  achievements AchievementRecord[]
+  followers    Follow[]            @relation("FollowerRelation")
+  following    Follow[]            @relation("FollowingRelation")
+
+  @@map("users")
+}
+
+model Profile {
+  id              String  @id @default(dbgenerated("gen_random_uuid()"))
+  userId          String  @unique
+  displayName     String?
+  bio             String?
+  country         String?
+  preferredServer String?
+  avatarUrl       String?
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("profiles")
+}
+
+model Platform {
+  id          String @id @default(dbgenerated("gen_random_uuid()"))
+  title       String
+  description String
+  icon        String
+
+  achievements Achievement[]
+
+  @@map("platforms")
+}
+
+model Achievement {
+  id          BigInt   @id @default(autoincrement())
+  title       String
+  description String?
+  createdAt   DateTime @default(now())
+  platformId  String
+
+  platform Platform @relation(fields: [platformId], references: [id])
+
+  records AchievementRecord[]
+
+  @@map("achievements")
+}
+
+model AchievementRecord {
+  id            BigInt   @id @default(autoincrement())
+  userId        String
+  achievementId BigInt
+  achievedAt    DateTime @default(now())
+
+  user        User        @relation(fields: [userId], references: [id])
+  achievement Achievement @relation(fields: [achievementId], references: [id])
+
+  @@map("achievement_records")
+}
+
+model Follow {
+  id          BigInt   @id @default(autoincrement())
+  followerId  String
+  followingId String
+  createdAt   DateTime @default(now())
+
+  follower  User @relation("FollowerRelation", fields: [followerId], references: [id])
+  following User @relation("FollowingRelation", fields: [followingId], references: [id])
+
+  @@map("follows")
+}
