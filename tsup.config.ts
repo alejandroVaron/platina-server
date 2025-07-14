@@ -16,6 +16,8 @@ export default defineConfig({
       "@utils": "./src/utils",
       "@config": "./src/config",
       "@types": "./src/types",
+      "@lib": "./src/lib",
+      "@auth": "./src/auth",
     };
   },
 });

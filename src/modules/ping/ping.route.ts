@@ -4,8 +4,8 @@ import { authMiddleware } from "@middlewares/auth.middleware";
 
 const router = Router();
 
-router.get("/ping", authMiddleware, pingController);
+router.get("/", authMiddleware, pingController);
 
-router.get("/ping/users", authMiddleware, pingUserController);
+router.get("/users", authMiddleware, pingUserController);
 
 export default router;

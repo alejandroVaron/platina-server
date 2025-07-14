@@ -9,6 +9,8 @@
       "@utils/*": ["utils/*"],
       "@config/*": ["config/*"],
       "@types/*": ["types/*"],
+      "@lib/*": ["lib/*"],
+      "@auth/*": ["auth/*"],
     },
     "outDir": "./dist",
     "esModuleInterop": true,
