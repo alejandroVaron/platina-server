@@ -10,7 +10,7 @@ export const validate =
       const formatted = result.error.format();
       return res.status(400).json({
         status: "error",
-        message: "Validation failed",
+        message: "Body inválido.",
         errors: formatted,
       });
     }

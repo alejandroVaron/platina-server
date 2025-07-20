@@ -16,10 +16,10 @@ export default class AuthService {
   static async login(email: string, password: string) {
     const user = await db.user.findUnique({ where: { email } });
 
-    if (!user) throw new ApiError(401, "Invalid credentials");
+    if (!user) throw new ApiError(401, "Usuario o contraseña incorrecta.");
 
     const passwordValid = await verifyHash(user.password, password);
-    if (!passwordValid) throw new ApiError(401, "Invalid credentials");
+    if (!passwordValid) throw new ApiError(401, "Usuario o contraseña incorrecta.");
 
     const accessToken = this.generateAccessToken(
       user.id,
@@ -41,11 +41,11 @@ export default class AuthService {
         sub: string;
       };
       const user = await db.user.findUnique({ where: { id: payload.sub } });
-      if (!user) throw new ApiError(401, "User not found");
+      if (!user) throw new ApiError(401, "Usuario no encontrado.");
 
       return this.generateAccessToken(user.id, user.email, user.username);
     } catch (err) {
-      throw new ApiError(401, "Invalid credentials");
+      throw new ApiError(401, "Credenciales inválidas.");
     }
   }
 
