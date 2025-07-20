@@ -3,7 +3,10 @@ import { Request, Response } from "express";
 import AuthService from "@modules/auth/auth.service";
 import { successResponse, errorResponse } from "@utils/handleResponse";
 
+const timeoutTokenFront = 3600; // Temporalmente se setea el token para que esté habilitado una hora
+
 export default class AuthController {
+
   static async login(req: Request, res: Response) {
     const { email, password } = req.body;
     const result = await AuthService.login(email, password);
@@ -12,21 +15,25 @@ export default class AuthController {
       .cookie("refreshToken", result.refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
-        path: "/api/auth/refresh",
-        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        path: "/api",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
       })
       .json({
         status: "success",
-        message: "Login successful",
-        data: { accessToken: result.accessToken },
+        message: "Login exitoso",
+        data: { accesstoken: result.accessToken, timeout: timeoutTokenFront},
       });
   }
 
   static async refreshToken(req: Request, res: Response) {
-    const token = req.cookies.refreshToken;
+    const token = req.cookies?.refreshToken;
+
+    if (!token) {
+    return errorResponse(res, "Refresh token no enviado", 401);
+  }
     const accessToken = await AuthService.refreshAccessToken(token);
-    res.json({ accessToken });
+    return successResponse(res, "Token generado", 200, { accessToken, timeout: timeoutTokenFront });
   }
 
   static async getHash(req: Request, res: Response) {
@@ -36,7 +43,7 @@ export default class AuthController {
   }
 
   static async logout(_req: Request, res: Response) {
-    res.clearCookie("refreshToken", { path: "/api/auth/refresh" });
+    res.clearCookie("refreshToken", { path: "/api" });
     res.sendStatus(204);
   }
 }
