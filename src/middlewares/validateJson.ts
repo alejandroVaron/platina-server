@@ -1,19 +1,20 @@
-// src/middlewares/validate.ts
 import { Request, Response, NextFunction } from "express";
 import { ZodType } from "zod";
+import { errorResponse } from "@utils/handleResponse";
+import { ApiError } from "@utils/apiError";
+
+type Source = "body" | "query" | "params";
 
 export const validate =
-  (schema: ZodType) => (req: Request, res: Response, next: NextFunction) => {
-    const result = schema.safeParse(req.body);
+  (schema: ZodType, source: Source = "body") =>
+  (req: Request, res: Response, next: NextFunction) => {
+    const data = Object.assign({}, req[source]);
+    const result = schema.safeParse(data);
 
     if (!result.success) {
-      const formatted = result.error.format();
-      return res.status(400).json({
-        status: "error",
-        message: "Body inválido.",
-        errors: formatted,
+      throw new ApiError(400, `Validación fallida en ${source}.`, {
+        error: result.error.message,
       });
     }
-    req.body = result.data;
     next();
   };

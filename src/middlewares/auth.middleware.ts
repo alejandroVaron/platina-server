@@ -36,3 +36,4 @@ export const authMiddleware = (
     return res.status(401).json({ status: 'error', message: "Token inválido o expirado", data: {} });
   }
 };
+

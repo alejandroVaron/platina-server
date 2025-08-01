@@ -9,6 +9,7 @@ export function successResponse(res: Response, message: string, statusCode = 200
 }
 
 export function errorResponse(res: Response, message: string, statusCode = 400, data = null) {
+  console.log("status: ",statusCode, "message: ",message, "data: ",data)
   return res.status(statusCode).json({
     status: 'error',
     message,
