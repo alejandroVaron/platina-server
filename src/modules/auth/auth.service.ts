@@ -1,4 +1,3 @@
-// src/modules/auth/auth.service.ts
 import jwt from "jsonwebtoken";
 import { prisma } from "@lib/prisma";
 import { hash, verifyHash } from "@utils/handleEncript";
@@ -16,10 +15,14 @@ export default class AuthService {
   static async login(email: string, password: string) {
     const user = await db.user.findUnique({ where: { email } });
 
+    // Simula un retraso de 1 segundo
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
     if (!user) throw new ApiError(401, "Usuario o contraseña incorrecta.");
 
     const passwordValid = await verifyHash(user.password, password);
-    if (!passwordValid) throw new ApiError(401, "Usuario o contraseña incorrecta.");
+    if (!passwordValid)
+      throw new ApiError(401, "Usuario o contraseña incorrecta.");
 
     const accessToken = this.generateAccessToken(
       user.id,

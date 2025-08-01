@@ -18,6 +18,7 @@ export default defineConfig({
       "@types": "./src/types",
       "@lib": "./src/lib",
       "@auth": "./src/auth",
+      "@graphql": "./src/graphql",
     };
   },
 });

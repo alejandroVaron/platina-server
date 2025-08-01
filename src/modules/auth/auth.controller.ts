@@ -1,9 +1,8 @@
-// src/modules/auth/auth.controller.ts
 import { Request, Response } from "express";
 import AuthService from "@modules/auth/auth.service";
 import { successResponse, errorResponse } from "@utils/handleResponse";
 
-const timeoutTokenFront = 3600; // Temporalmente se setea el token para que esté habilitado una hora
+const timeoutTokenFront = 3600; // Temporalmente se setea el token para que esté habilitado una hora, por defecto 3600: 1 hora
 
 export default class AuthController {
 

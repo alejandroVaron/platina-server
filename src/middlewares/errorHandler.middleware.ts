@@ -9,7 +9,7 @@ export const errorHandler = (
   _next: NextFunction
 ) => {
   if (err instanceof ApiError) {
-    return errorResponse(res, err.message, err.statusCode);
+    return errorResponse(res, err.message, err.statusCode, err.data);
   }
   const status = err.status || 500;
   const message = err.message || "Error interno del servidor";
